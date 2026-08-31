@@ -1,3 +1,2 @@
-NODO Asociación de Comercio Justo v0.8.27
-
-Corrección de regresión: las cuatro vías de entrada de Participantes de la Prima y la salida/expediente usan Sucursal (Bácum/Caborca) y eliminan Área. Se revisó específicamente Copiar y pegar.
+NODO Asociación de Comercio Justo v0.8.29
+Plan de Prima anual: archivo histórico, auditoría, resumen por ejercicio y sincronización preparada con Google Drive institucional.
