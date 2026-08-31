@@ -30,7 +30,7 @@ function normalizeValue(f,v){
 function rowKey(r){return r.id||r.solicitudId||r.importId}
 
 export default function PlanPrimaBeneficiarios({project,onChanged}){
- const [fields,setFields]=useState(defaultFields),[rows,setRows]=useState([]),[padron,setPadron]=useState([]),[sols,setSols]=useState([]),[selected,setSelected]=useState(new Set()),[grid,setGrid]=useState([]),[msg,setMsg]=useState(''),[formPublico,setFormPublico]=useState(false),[newField,setNewField]=useState({etiqueta:'',tipo:'Texto',opciones:'',obligatorio:false});
+ const [fields,setFields]=useState(defaultFields),[rows,setRows]=useState([]),[padron,setPadron]=useState([]),[sols,setSols]=useState([]),[selected,setSelected]=useState(new Set()),[grid,setGrid]=useState([]),[msg,setMsg]=useState(''),[formPublico,setFormPublico]=useState(false),[newField,setNewField]=useState({etiqueta:'',tipo:'Texto',opciones:'',obligatorio:false}),[editingField,setEditingField]=useState(null),[fieldDraft,setFieldDraft]=useState(null);
  const projectId=project.id, activityId=`BEN-${projectId}`, artifactId=`FORM-BEN-${projectId}`;
  async function load(){
    if(!projectId)return;
@@ -74,6 +74,14 @@ export default function PlanPrimaBeneficiarios({project,onChanged}){
  }
  function addField(){if(!newField.etiqueta.trim())return;const next=[...fields,{...newField,id:uid('campo'),orden:fields.length}];saveConfig(next);setNewField({etiqueta:'',tipo:'Texto',opciones:'',obligatorio:false})}
  function deleteField(id){if(['colaborador','beneficiario'].includes(id)){setMsg('Los campos base Colaborador y Beneficiario no se eliminan; puedes dejarlos opcionales.');return;}saveConfig(fields.filter(f=>f.id!==id).map((f,i)=>({...f,orden:i})))}
+ function startEditField(f){setEditingField(f.id);setFieldDraft({...f});}
+ async function saveFieldEdit(){
+   if(!fieldDraft?.etiqueta?.trim())return;
+   const next=fields.map(f=>f.id===editingField?{...f,...fieldDraft,etiqueta:fieldDraft.etiqueta.trim()}:f);
+   await saveConfig(next);setEditingField(null);setFieldDraft(null);setMsg('Campo actualizado.');
+ }
+ function cancelFieldEdit(){setEditingField(null);setFieldDraft(null);}
+
 
  function blankRow(){return {importId:uid('fila'),datos:Object.fromEntries(sorted.map(f=>[f.id,''])),origen:'Captura directa'}}
  function addGrid(){setGrid(g=>[...g,blankRow()])}
@@ -125,7 +133,7 @@ export default function PlanPrimaBeneficiarios({project,onChanged}){
  return <details style={{marginTop:10,borderTop:`1px solid ${border}`,paddingTop:10}}><summary style={{cursor:'pointer',fontWeight:900,color:green}}>Beneficiarios del programa · {all.length}</summary>
   <div style={{marginTop:12,background:bg,border:`1px solid ${border}`,borderRadius:10,padding:12}}>
    <h4 style={{margin:'0 0 6px',color:green}}>1. Datos a solicitar</h4><div style={{fontSize:12,color:muted,marginBottom:8}}>El ID del padrón corresponde únicamente al colaborador/trabajador. El beneficiario o familiar nunca recibe ID de participante por este registro.</div>
-   <div style={{display:'grid',gap:5}}>{sorted.map((f,i)=><div key={f.id} style={{display:'grid',gridTemplateColumns:'32px 1fr 100px auto',gap:6,alignItems:'center',fontSize:12}}><span>{i+1}</span><input style={input} value={f.etiqueta} onChange={e=>setFields(fs=>fs.map(x=>x.id===f.id?{...x,etiqueta:e.target.value}:x))} onBlur={()=>saveConfig(fields)}/><span>{f.tipo}</span><button style={btn('danger')} onClick={()=>deleteField(f.id)}>Quitar</button></div>)}</div>
+   <div style={{display:'grid',gap:5}}>{sorted.map((f,i)=>{const ed=editingField===f.id,d=ed?(fieldDraft||f):f;return <div key={f.id} style={{display:'grid',gridTemplateColumns:'32px minmax(0,1fr) 130px 180px auto',gap:6,alignItems:'center',fontSize:12}}><span>{i+1}</span><input style={{...input,background:ed?'#fff':'#f8faf7'}} readOnly={!ed} value={d.etiqueta} onChange={e=>setFieldDraft({...d,etiqueta:e.target.value})}/>{ed?<select style={input} value={d.tipo} onChange={e=>setFieldDraft({...d,tipo:e.target.value})}>{['Texto','Número','Correo','Teléfono','Fecha','Selección','Sí/No','Archivo','URL'].map(x=><option key={x}>{x}</option>)}</select>:<span>{f.tipo}</span>}{ed?<div style={{display:'flex',gap:5,alignItems:'center'}}>{d.tipo==='Selección'&&<input style={input} placeholder="Opciones separadas por coma" value={d.opciones||''} onChange={e=>setFieldDraft({...d,opciones:e.target.value})}/>}<label style={{whiteSpace:'nowrap'}}><input type="checkbox" checked={!!d.obligatorio} onChange={e=>setFieldDraft({...d,obligatorio:e.target.checked})}/> Obligatorio</label></div>:<span style={{color:muted}}>{f.tipo==='Selección'?(f.opciones||'Sin opciones'):(f.obligatorio?'Obligatorio':'Opcional')}</span>}<div style={{display:'flex',gap:5,justifyContent:'flex-end'}}>{ed?<><button style={btn()} onClick={saveFieldEdit}>Guardar</button><button style={btn('secondary')} onClick={cancelFieldEdit}>Cancelar</button></>:<><button style={btn('secondary')} onClick={()=>startEditField(f)}>Editar</button><button style={btn('danger')} onClick={()=>deleteField(f.id)}>Quitar</button></>}</div></div>})}</div>
    <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 2fr auto',gap:6,marginTop:8}}><input style={input} placeholder="Nuevo campo" value={newField.etiqueta} onChange={e=>setNewField({...newField,etiqueta:e.target.value})}/><select style={input} value={newField.tipo} onChange={e=>setNewField({...newField,tipo:e.target.value})}>{['Texto','Número','Correo','Teléfono','Fecha','Selección','Sí/No','Archivo','URL'].map(x=><option key={x}>{x}</option>)}</select><input style={input} placeholder="Opciones si es selección" value={newField.opciones} onChange={e=>setNewField({...newField,opciones:e.target.value})}/><button style={btn()} onClick={addField}>Agregar campo</button></div>
   </div>
   <div style={{marginTop:10,background:bg,border:`1px solid ${border}`,borderRadius:10,padding:12}}>

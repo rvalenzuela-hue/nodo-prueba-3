@@ -1,2 +1,2 @@
-NODO Asociación de Comercio Justo v0.8.34
-Beneficiarios por proyecto del Plan de Prima con captura individual, Excel, copiar/pegar y formulario público.
+NODO Asociación de Comercio Justo v0.8.35
+Edición completa de campos de datos solicitados a beneficiarios.
