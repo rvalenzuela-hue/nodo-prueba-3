@@ -1,2 +1,2 @@
-NODO Asociación de Comercio Justo v0.8.29
-Plan de Prima anual: archivo histórico, auditoría, resumen por ejercicio y sincronización preparada con Google Drive institucional.
+NODO Asociación de Comercio Justo v0.8.31
+Clonado de programas sin beneficiarios y publicación real de campos seleccionados del Plan de Prima en el portal público.
