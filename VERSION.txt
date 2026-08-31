@@ -1,2 +1,2 @@
-NODO Asociación de Comercio Justo v0.8.35
-Edición completa de campos de datos solicitados a beneficiarios.
+NODO Asociación de Comercio Justo v0.8.39
+Registro estructural de Evaluaciones de Necesidades: individual, Excel y copiar/pegar.

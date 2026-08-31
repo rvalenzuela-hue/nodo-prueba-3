@@ -99,6 +99,8 @@ service cloud.firestore {
       allow update, delete: if false;
     }
     match /nodo_meta/{id} { allow read, write: if isManagement(); }
+    match /evaluacionesNecesidades/{id} { allow read: if known(); allow create, update, delete: if isManagement(); }
+    match /evaluacionNecesidadesRespuestas/{id} { allow read: if known(); allow create, update, delete: if isManagement(); }
     match /planPrima/{id} { allow read: if known(); allow create, update, delete: if isManagement(); }
     match /planPrimaProyectos/{id} { allow read: if known(); allow create, update, delete: if isManagement(); }
     match /planPrimaBeneficiarioConfig/{id} { allow read: if known(); allow create, update, delete: if isManagement(); }
