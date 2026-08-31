@@ -1,7 +1,3 @@
-NODO Asociación de Comercio Justo v0.8.25
+NODO Asociación de Comercio Justo v0.8.26
 
-Cajón Participantes de la Prima:
-- Entrada mantiene Editar, Eliminar e Imprimir individual y masivo en el padrón.
-- Salida / Expedientes añade Editar, Eliminar e Imprimir individual y masivo.
-- Se conserva alta individual, plantilla Excel, copiar/pegar y alta desde Programas.
-- Eliminar del padrón no elimina el historial de solicitudes, actividades o servicios.
+Participantes de la Prima: se elimina Área y se sustituye Centro por Sucursal, con únicas opciones Bácum y Caborca. Se conservan las vías de entrada, expediente de salida y acciones Editar, Eliminar e Imprimir individuales y masivas.
