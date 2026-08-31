@@ -1,3 +1,3 @@
-NODO Asociación de Comercio Justo v0.8.26
+NODO Asociación de Comercio Justo v0.8.27
 
-Participantes de la Prima: se elimina Área y se sustituye Centro por Sucursal, con únicas opciones Bácum y Caborca. Se conservan las vías de entrada, expediente de salida y acciones Editar, Eliminar e Imprimir individuales y masivas.
+Corrección de regresión: las cuatro vías de entrada de Participantes de la Prima y la salida/expediente usan Sucursal (Bácum/Caborca) y eliminan Área. Se revisó específicamente Copiar y pegar.
