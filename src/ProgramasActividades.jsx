@@ -1,4 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react';
+import CurrencyInput from './CurrencyInput';
 import {collection,deleteDoc,doc,getDocs,setDoc,updateDoc} from 'firebase/firestore';
 import {auth,db} from './firebase';
 import {nextParticipantId} from './idService';

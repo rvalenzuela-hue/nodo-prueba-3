@@ -1,2 +1,2 @@
-NODO Asociación de Comercio Justo v0.8.31
-Clonado de programas sin beneficiarios y publicación real de campos seleccionados del Plan de Prima en el portal público.
+NODO Asociación de Comercio Justo v0.8.33
+Análisis estructural de lineamientos: secciones, reglas operativas, categorías e indicadores derivados del contenido.
