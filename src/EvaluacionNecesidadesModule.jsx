@@ -2,6 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {collection,deleteDoc,doc,getDocs,setDoc} from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import {auth,db} from './firebase';
+import {DRIVE_FOLDERS} from './config/driveFolders';
 import {printRecords,toggleSelection,selectAll} from './recordTools';
 
 const green='#31533a',bright='#3dad2d',border='#dfe5dc',muted='#667268',danger='#a33',bg='#f6f8f3';
@@ -82,10 +83,11 @@ export default function EvaluacionNecesidadesModule(){
    const endpoint=import.meta.env.VITE_DRIVE_UPLOAD_ENDPOINT;if(!endpoint){setMsg('La carga a Drive no está conectada: falta VITE_DRIVE_UPLOAD_ENDPOINT.');return}
    setPdfBusy(true);
    try{
-     const id=editing||uid('EVN'),body=new FormData();body.append('file',pdfFile);body.append('folderKey','informes');body.append('context',JSON.stringify({tipo:'Evaluación de Necesidades',evaluacionId:id,anio:evaln.anio,titulo:evaln.titulo}));
-     const r=await fetch(endpoint,{method:'POST',body});if(!r.ok)throw new Error('No fue posible subir el PDF.');
+     const id=editing||uid('EVN'),body=new FormData(),token=await auth.currentUser?.getIdToken();if(!token)throw new Error('Tu sesión no está autenticada. Vuelve a iniciar sesión.');
+     body.append('file',pdfFile);body.append('folderKey','informes');body.append('folderId',DRIVE_FOLDERS.informes||'');body.append('context',JSON.stringify({tipo:'Evaluación de Necesidades',evaluacionId:id,anio:evaln.anio,titulo:evaln.titulo}));
+     const r=await fetch(endpoint,{method:'POST',headers:{Authorization:`Bearer ${token}`},body});if(!r.ok)throw new Error(`No fue posible subir el PDF (HTTP ${r.status}).`);
      const up=await r.json(),now=new Date().toISOString();
-     const payload={...evaln,id,anio:Number(evaln.anio||nowYear),estado:'Finalizada',documentoOriginal:{nombre:pdfFile.name,url:up?.url||'',driveFileId:up?.fileId||'',tipo:'application/pdf',subidoEn:now},fechaLimiteNuevaEvaluacion:addYears(evaln.fechaFin||evaln.fechaInicio,3),actualizadoEn:now,actualizadoPor:auth.currentUser?.email||'',creadoEn:editing?(evaluaciones.find(x=>x.id===editing)?.creadoEn||now):now};
+     const payload={...evaln,id,anio:Number(evaln.anio||nowYear),estado:'Finalizada',documentoOriginal:{nombre:pdfFile.name,url:up?.url||up?.webViewLink||'',driveFileId:up?.fileId||'',tipo:'application/pdf',subidoEn:now},fechaLimiteNuevaEvaluacion:addYears(evaln.fechaFin||evaln.fechaInicio,3),actualizadoEn:now,actualizadoPor:auth.currentUser?.email||'',creadoEn:editing?(evaluaciones.find(x=>x.id===editing)?.creadoEn||now):now};
      await setDoc(doc(db,'evaluacionesNecesidades',id),payload,{merge:false});setEditing(id);setEvaln(payload);setPdfFile(null);setMsg('PDF cargado y evaluación registrada.');await load();
    }catch(e){setMsg(e?.message||'No fue posible registrar el PDF.')}finally{setPdfBusy(false)}
  }
