@@ -1,2 +1,2 @@
-NODO Asociación de Comercio Justo v0.8.33
-Análisis estructural de lineamientos: secciones, reglas operativas, categorías e indicadores derivados del contenido.
+NODO Asociación de Comercio Justo v0.8.34
+Beneficiarios por proyecto del Plan de Prima con captura individual, Excel, copiar/pegar y formulario público.
